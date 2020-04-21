@@ -1,0 +1,103 @@
+
+
+
+case class yearSchema(
+                       fl_date: String,
+                       op_carrier:	String,
+                       op_carrier_fl_num: Int,
+                       origin: String,
+                       dest: String,
+                       crs_dep_time: Int,
+                       dep_time: Double,
+                       dep_delay: Double,
+                       taxi_out: Double,
+                       wheels_off: Double,
+                       wheels_on: Double,
+                       taxi_in: Double,
+                       crs_arr_time: Int,
+                       arr_time: Double,
+                       arr_delay: Double,
+                       cancelled: Double,
+                       cancellation_code: String,
+                       diverted: Double,
+                       crs_elapsed_time: Double,
+                       actual_elapsed_time: Double,
+                       air_time: Double,
+                       distance: Double,
+                       carrier_delay: Double,
+                       weather_delay: Double,
+                       nas_delay: Double,
+                       security_delay: Double,
+                       late_aircraft_delay: Double
+                     )
+case class flightSchema(
+                        year: Int,
+                        month: Int,
+                        day: Int,
+                        day_of_week: Int,
+                        airline: String,
+                        flight_number: String,
+                        tail_number: String,
+                        origin_airport: String,
+                        destination_airport: String,
+                        scheduled_departure: Int,
+                        departure_time: Int,
+                        departure_delay: Int,
+                        taxi_out: Int,
+                        wheels_off: Int,
+                        scheduled_time: Int,
+                        elapsed_time: Int,
+                        air_time: Int,
+                        distance: Int,
+                        wheels_on: Int,
+                        taxi_in: Int,
+                        scheduled_arrival: Int,
+                        arrival_time: Int,
+                        arrival_delay: Int,
+                        diverted: Int,
+                        cancelled: Int,
+                        cancellation_reason: String,
+                        air_system_delay: Int,
+                        security_delay: Int,
+                        airline_delay: Int,
+                        late_aircraft_delay: Int,
+                        weather_delay: Int
+                     )
+case class airportsSchema(
+                        iata_code: String,
+                        airport: String,
+                        city: String,
+                        state: String,
+                        country: String,
+                        latitude: Double,
+                        longitude: Double
+                       )
+case class airlineSchema(
+                        iata_code: String,
+                        airline: String
+                        )
+
+   val caseClassFlightSchema = Encoders.product[flightSchema].schema
+   val caseClassAirportSchema = Encoders.product[airportsSchema].schema
+
+  /*
+  val yearDetails = spark.read.format("csv")
+    .option("inferSchema", "true")
+    .option("header", "true")
+    .load(inputYearsFiles + "2018.csv", inputYearsFiles + "2017.csv", inputYearsFiles + "2016.csv")
+*/
+  val flightDetails = spark.read
+    .option("header","true")
+    .schema(caseClassFlightSchema)
+    .csv( inputDataFiles + "flights.csv")
+
+  val airportsDetails = spark.read
+    .option("header","true")
+    .schema(caseClassAirportSchema)
+    .csv( inputDataFiles + "airports.csv")
+  /*
+  val yearDetails = spark.read.format("csv")
+    .option("inferSchema", "true")
+    .option("header", "true")
+    .load(inputYearsFiles + "2018.csv", inputYearsFiles + "2017.csv", inputYearsFiles + "2016.csv")
+*/
